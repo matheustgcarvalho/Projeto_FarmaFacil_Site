@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaFácil - Portal do Usuário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        /* --- IDENTIDADE VISUAL --- */
+        :root {
+            --tech-purple: #2E1A47;
+            --deep-purple: #1a0f2e;
+            --neon-mint: #69FFC2;
+            --mint-hover: #4addb0;
+            --pure-white: #FFFFFF;
+            --gray-text: #a0a0b0;
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            height: 100vh;
+            background-color: var(--deep-purple);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- LADO ESQUERDO (BRANDING) --- */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--tech-purple) 0%, #452c63 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: var(--pure-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Círculos de Fundo */
+        .circle-deco {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--neon-mint);
+            opacity: 0.05;
+            filter: blur(50px);
+        }
+        .c1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .c2 { width: 500px; height: 500px; bottom: -150px; right: -150px; }
+
+        /* --- 1. LOGO (PRIMEIRO) --- */
+        .brand-logo { 
+            font-size: 3.5rem; 
+            font-weight: 800; letter-spacing: 1px; 
+            margin-bottom: 30px; /* Espaço para a animação abaixo */
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            position: relative; z-index: 2;
+        }
+        .brand-logo .material-icons { font-size: 4rem; color: var(--neon-mint); }
+
+        /* --- 2. ANIMAÇÃO (SEGUNDO) --- */
+        .concept-animation-container {
+            width: 280px;
+            height: 320px;
+            position: relative;
+            margin-bottom: 30px; /* Espaço para o texto abaixo */
+            z-index: 2;
+            transform: scale(0.9);
+        }
+
+        /* Elementos da Animação */
+        .anim-machine {
+            width: 200px; height: 300px;
+            background: rgba(255,255,255,0.1);
+            border: 4px solid rgba(255,255,255,0.3); border-radius: 20px;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+        .anim-screen {
+            width: 160px; height: 120px; background: rgba(46, 26, 71, 0.8);
+            margin-top: 20px; border-radius: 10px; border: 2px solid rgba(105, 255, 194, 0.3);
+            position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .anim-btn { width: 100px; height: 30px; background-color: var(--neon-mint); border-radius: 15px; animation: btnPulse 4s infinite; }
+        .anim-hand {
+            font-family: 'Material Icons'; content: "touch_app"; color: white; font-size: 3rem;
+            position: absolute; top: 110px; left: 150px; opacity: 0;
+            animation: handTap 4s infinite; z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+        }
+        .anim-pill-box {
+            width: 40px; height: 40px; background-color: white; border-radius: 6px;
+            position: absolute; top: 150px; opacity: 0;
+            box-shadow: 0 0 15px var(--neon-mint);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--tech-purple); font-weight: bold; font-size: 1.5rem;
+            animation: boxDrop 4s infinite;
+        }
+        .anim-tray {
+            width: 160px; height: 50px; background: rgba(0,0,0,0.3);
+            margin-top: auto; margin-bottom: 20px; border-radius: 0 0 15px 15px; border-top: 2px solid rgba(255,255,255,0.1);
+        }
+
+        /* Keyframes */
+        @keyframes handTap {
+            0% { opacity: 0; transform: translate(20px, 20px); } 10% { opacity: 1; transform: translate(0, 0) scale(1); }
+            15% { transform: scale(0.9); } 20% { transform: scale(1); } 30% { opacity: 0; transform: translate(-20px, 0); } 100% { opacity: 0; }
+        }
+        @keyframes btnPulse {
+            0%, 14% { transform: scale(1); opacity: 0.8; } 15% { transform: scale(0.95); opacity: 1; background-color: white; }
+            16%, 100% { transform: scale(1); opacity: 0.8; background-color: var(--neon-mint); }
+        }
+        @keyframes boxDrop {
+            0%, 20% { opacity: 0; top: 150px; transform: rotate(0deg); } 25% { opacity: 1; top: 160px; }
+            40% { top: 235px; transform: rotate(10deg); } 45% { top: 230px; transform: rotate(-5deg); }
+            50% { top: 235px; transform: rotate(0deg); } 85% { opacity: 1; } 90%, 100% { opacity: 0; }
+        }
+
+        /* --- 3. TEXTOS (TERCEIRO) --- */
+        .brand-content { 
+            z-index: 2; 
+            text-align: center; 
+            max-width: 550px; 
+        }
+        
+        .brand-tagline { 
+            font-size: 2rem; 
+            font-weight: 700; margin-bottom: 15px; color: var(--neon-mint);
+            line-height: 1.3;
+        }
+        .brand-desc { 
+            font-size: 1.1rem; 
+            line-height: 1.6; color: rgba(255,255,255,0.85); font-weight: 400;
+        }
+
+        /* --- LADO DIREITO (LOGIN FORM) --- */
+        .login-section {
+            flex: 1;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 40px; background-color: var(--deep-purple); z-index: 10;
+        }
+
+        .login-container { width: 100%; max-width: 400px; }
+        .login-header { margin-bottom: 35px; }
+        .login-title { font-size: 2rem; color: var(--pure-white); font-weight: 700; margin-bottom: 5px; }
+        .login-subtitle { color: var(--gray-text); font-size: 0.95rem; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; color: var(--pure-white); font-size: 0.9rem; margin-bottom: 8px; font-weight: 500; }
+        .input-wrapper { position: relative; }
+        .form-input {
+            width: 100%; padding: 15px 15px 15px 45px; background-color: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: var(--pure-white); font-size: 1rem; transition: all 0.3s;
+        }
+        .form-input:focus { outline: none; border-color: var(--neon-mint); background-color: rgba(105, 255, 194, 0.05); }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-text); font-size: 1.2rem; }
+        .form-input:focus + .input-icon { color: var(--neon-mint); }
+        .toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-text); cursor: pointer; }
+        .toggle-password:hover { color: var(--pure-white); }
+        
+        .forgot-password { display: block; text-align: right; color: var(--neon-mint); font-size: 0.85rem; text-decoration: none; margin-bottom: 25px; }
+        .forgot-password:hover { opacity: 0.8; }
+        
+        .btn-login {
+            width: 100%; padding: 16px; background-color: var(--neon-mint); color: var(--tech-purple);
+            border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;
+        }
+        .btn-login:hover { background-color: var(--mint-hover); transform: translateY(-2px); }
+
+        .separator { display: flex; align-items: center; margin-bottom: 20px; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+        .separator::before, .separator::after { content: ""; flex: 1; height: 1px; background-color: rgba(255,255,255,0.1); }
+        .separator span { margin: 0 10px; }
+
+        .btn-create-account {
+            display: flex; justify-content: center; align-items: center; width: 100%; padding: 15px;
+            background-color: transparent; border: 2px solid var(--neon-mint); color: var(--neon-mint);
+            border-radius: 10px; font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.3s;
+        }
+        .btn-create-account:hover { background-color: rgba(105, 255, 194, 0.1); box-shadow: 0 0 15px rgba(105, 255, 194, 0.1); }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .brand-section { display: none; }
+            .login-section { height: 100vh; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="brand-section">
+        <div class="circle-deco c1"></div>
+        <div class="circle-deco c2"></div>
+        
+        <div class="brand-logo">
+            <span class="material-icons">local_pharmacy</span> FarmaFácil
+        </div>
+        
+        <div class="concept-animation-container">
+            <span class="material-icons anim-hand">touch_app</span>
+            <div class="anim-machine">
+                <div class="anim-screen"><div class="anim-btn"></div></div>
+                <div class="anim-pill-box"><span class="material-icons">medication</span></div>
+                <div class="anim-tray"></div>
+            </div>
+        </div>
+
+        <div class="brand-content">
+            <h1 class="brand-tagline">Sua saúde conectada.</h1>
+            <p class="brand-desc">
+                Gerencie seus pontos, acompanhe histórico de compras e valide sua identidade para usar nossas máquinas inteligentes em todo o Brasil.
+            </p>
+        </div>
+    </section>
+
+    <section class="login-section">
+        <div class="login-container">
+            <div class="login-header">
+                <h2 class="login-title">Bem-vindo</h2>
+                <p class="login-subtitle">Insira suas credenciais para acessar sua conta.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="cpf" class="form-label">CPF</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="cpf" class="form-input" placeholder="000.000.000-00" maxlength="14" autocomplete="off">
+                        <span class="material-icons input-icon">badge</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••">
+                        <span class="material-icons input-icon">lock</span>
+                        <span class="material-icons toggle-password" onclick="togglePass()">visibility_off</span>
+                    </div>
+                </div>
+
+                <a href="#" class="forgot-password">Esqueceu sua senha?</a>
+
+                <button type="submit" class="btn-login">
+                    ENTRAR <span class="material-icons">login</span>
+                </button>
+            </form>
+
+            <div class="separator"><span>ou</span></div>
+
+            <a class="btn-create-account" href="site_cadastro.html">
+                CRIAR MINHA CONTA
+            </a>
+        </div>
+    </section>
+
+    <script>
+        const cpfInput = document.getElementById('cpf');
+        cpfInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); 
+            if (value.length > 11) value = value.slice(0, 11); 
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+
+        function togglePass() {
+            const passInput = document.getElementById('password');
+            const icon = document.querySelector('.toggle-password');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                passInput.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const cpf = document.getElementById('cpf').value;
+            const pass = document.getElementById('password').value;
+
+            if (cpf.length < 14 || pass.length < 3) {
+                alert("Por favor, preencha o CPF e a senha corretamente.");
+                return;
+            }
+            alert("Login realizado com sucesso!\n\nRedirecionando para o Painel do Usuário...");
+        });
+    </script>
+
+</body>
+</html>

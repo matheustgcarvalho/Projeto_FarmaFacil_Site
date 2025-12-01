@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaFácil - Criar Conta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        /* --- IDENTIDADE VISUAL --- */
+        :root {
+            --tech-purple: #2E1A47;
+            --deep-purple: #1a0f2e;
+            --neon-mint: #69FFC2;
+            --mint-hover: #4addb0;
+            --pure-white: #FFFFFF;
+            --gray-text: #a0a0b0;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --error-red: #ff4757;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            height: 100vh;
+            background-color: var(--deep-purple);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* LADO ESQUERDO (BRANDING) */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--tech-purple) 0%, #452c63 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: var(--pure-white);
+            position: relative;
+            overflow: hidden;
+        }
+        .circle-deco { position: absolute; border-radius: 50%; background: var(--neon-mint); opacity: 0.05; filter: blur(50px); }
+        .c1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .c2 { width: 500px; height: 500px; bottom: -150px; right: -150px; }
+
+        .brand-content { z-index: 2; text-align: center; max-width: 500px; }
+        .brand-logo { font-size: 3rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .brand-logo .material-icons { font-size: 3.5rem; color: var(--neon-mint); }
+        .brand-tagline { font-size: 2rem; font-weight: 700; margin-bottom: 15px; color: var(--neon-mint); line-height: 1.3; }
+        .brand-desc { font-size: 1.1rem; line-height: 1.6; color: rgba(255,255,255,0.85); }
+
+        /* LADO DIREITO (CADASTRO) */
+        .register-section {
+            flex: 1.2; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 40px; background-color: var(--deep-purple); z-index: 10;
+            overflow-y: auto;
+        }
+
+        .register-container { width: 100%; max-width: 500px; }
+        
+        .register-header { margin-bottom: 30px; }
+        .register-title { font-size: 2rem; color: var(--pure-white); font-weight: 700; margin-bottom: 5px; }
+        .register-subtitle { color: var(--gray-text); font-size: 0.95rem; }
+
+        /* GRID DE CAMPOS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .full-width { grid-column: span 2; } 
+
+        .form-group { margin-bottom: 0; }
+        .form-label { display: block; color: var(--pure-white); font-size: 0.85rem; margin-bottom: 6px; font-weight: 600; }
+        
+        .input-wrapper { position: relative; }
+        .form-input {
+            width: 100%; padding: 12px 12px 12px 40px;
+            background-color: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: var(--pure-white); font-size: 0.95rem; transition: all 0.3s;
+        }
+        .form-input:focus { outline: none; border-color: var(--neon-mint); background-color: rgba(105, 255, 194, 0.05); }
+        .form-input.error { border-color: var(--error-red); } /* Estilo de erro */
+        
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-text); font-size: 1.1rem; }
+        .form-input:focus + .input-icon { color: var(--neon-mint); }
+
+        /* CHECKBOX */
+        .terms-group { grid-column: span 2; display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .terms-label { color: var(--gray-text); font-size: 0.9rem; cursor: pointer; }
+        .terms-link { color: var(--neon-mint); text-decoration: none; font-weight: 600; }
+        
+        /* BOTÃO */
+        .btn-register-action {
+            width: 100%; padding: 16px; background-color: var(--neon-mint); color: var(--tech-purple);
+            border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-register-action:hover { background-color: var(--mint-hover); transform: translateY(-2px); }
+
+        /* LINK VOLTAR */
+        .login-link-container { margin-top: 25px; text-align: center; color: var(--gray-text); font-size: 0.9rem; }
+        
+        .login-link { 
+            color: var(--neon-mint); font-weight: 700; text-decoration: none; cursor: pointer; 
+        }
+        .login-link:hover { text-decoration: underline; }
+
+        /* --- ESTILOS DOS MODAIS (ADICIONADO) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);
+            z-index: 1000; display: none; justify-content: center; align-items: center;
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background-color: #2a1b3d; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 30px; width: 90%; max-width: 400px;
+            text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transform: scale(0.9); animation: modalPop 0.3s forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalPop { to { transform: scale(1); } }
+
+        .modal-icon { font-size: 4rem; margin-bottom: 15px; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
+        .modal-text { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 30px; line-height: 1.5; }
+        
+        .modal-actions { display: flex; gap: 15px; justify-content: center; }
+        .modal-btn { 
+            flex: 1; padding: 14px; border-radius: 10px; border: none; 
+            font-weight: 700; cursor: pointer; font-size: 0.95rem; transition: opacity 0.2s;
+        }
+        .modal-btn:hover { opacity: 0.9; }
+
+        /* Estilos Modal Sucesso */
+        .modal-success { border-color: var(--neon-mint); }
+        .modal-success .modal-icon { color: var(--neon-mint); }
+        .btn-modal-login { background-color: var(--neon-mint); color: var(--tech-purple); }
+        .btn-modal-back { background-color: rgba(255,255,255,0.1); color: white; }
+
+        /* Estilos Modal Erro */
+        .modal-error { border-color: var(--error-red); }
+        .modal-error .modal-icon { color: var(--error-red); }
+        .btn-modal-retry { background-color: var(--error-red); color: white; width: 100%; }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .brand-section { display: none; }
+            .register-section { height: auto; min-height: 100vh; padding: 30px 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="brand-section">
+        <div class="circle-deco c1"></div>
+        <div class="circle-deco c2"></div>
+        
+        <div class="brand-content">
+            <div class="brand-logo">
+                <span class="material-icons">local_pharmacy</span> FarmaFácil
+            </div>
+            <h1 class="brand-tagline">Junte-se a nós.</h1>
+            <p class="brand-desc">
+                Crie sua conta em segundos e tenha acesso à farmácia do futuro na palma da sua mão.
+            </p>
+        </div>
+    </section>
+
+    <section class="register-section">
+        <div class="register-container">
+            <div class="register-header">
+                <h2 class="register-title">Criar Conta</h2>
+                <p class="register-subtitle">Preencha seus dados para começar.</p>
+            </div>
+
+            <form id="registerForm" novalidate>
+                <div class="form-grid">
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Nome Completo</label>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-input" id="nome" placeholder="Ex: Maria Silva" required>
+                            <span class="material-icons input-icon">person</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">CPF</label>
+                        <div class="input-wrapper">
+                            <input type="tel" class="form-input" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                            <span class="material-icons input-icon">badge</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nascimento</label>
+                        <div class="input-wrapper">
+                            <input type="date" class="form-input" id="nasc" required style="color-scheme: dark;">
+                            <span class="material-icons input-icon">calendar_today</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Celular</label>
+                        <div class="input-wrapper">
+                            <input type="tel" class="form-input" id="celular" placeholder="(00) 00000-0000" maxlength="15" required>
+                            <span class="material-icons input-icon">smartphone</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <div class="input-wrapper">
+                            <input type="email" class="form-input" id="email" placeholder="seu@email.com" required>
+                            <span class="material-icons input-icon">email</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="senha" placeholder="Crie uma senha forte" minlength="6" required>
+                            <span class="material-icons input-icon">lock</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Confirmar Senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="confirmaSenha" placeholder="Repita a senha" required>
+                            <span class="material-icons input-icon">lock_reset</span>
+                        </div>
+                    </div>
+
+                    <div class="terms-group full-width">
+                        <input type="checkbox" id="termos" required>
+                        <label for="termos" class="terms-label">Eu li e aceito os <a href="#" class="terms-link">Termos de Uso</a> e <a href="#" class="terms-link">Política de Privacidade</a>.</label>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn-register-action">
+                    CADASTRAR <span class="material-icons">check_circle</span>
+                </button>
+            </form>
+
+            <div class="login-link-container">
+                Já tem uma conta? 
+                <span class="login-link" onclick="window.location.href='site_login.html'">Fazer Login</span>
+            </div>
+        </div>
+    </section>
+
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-content modal-error">
+            <div class="material-icons modal-icon">error_outline</div>
+            <div class="modal-title">Atenção!</div>
+            <div class="modal-text" id="errorText">Por favor, preencha todos os dados corretamente para continuar.</div>
+            <div class="modal-actions">
+                <button class="modal-btn btn-modal-retry" onclick="closeModal('errorModal')">Tentar Novamente</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content modal-success">
+            <div class="material-icons modal-icon">check_circle</div>
+            <div class="modal-title">Cadastro Finalizado!</div>
+            <div class="modal-text">Sua conta foi criada com sucesso. Você já pode acessar o portal e usar nossas máquinas.</div>
+            <div class="modal-actions">
+                <button class="modal-btn btn-modal-back" onclick="closeModal('successModal')">Voltar</button>
+                <button class="modal-btn btn-modal-login" onclick="window.location.href='site_login.html'">Fazer Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MÁSCARA CPF
+        document.getElementById('cpf').addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = v;
+        });
+
+        // MÁSCARA CELULAR
+        document.getElementById('celular').addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            v = v.replace(/^(\d\d)(\d)/g, '($1) $2');
+            v = v.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = v;
+        });
+
+        // FUNÇÃO PARA FECHAR MODAIS
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // VALIDAÇÃO E SUBMIT COM MODAIS
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+
+            // Pega todos os inputs obrigatórios
+            const inputs = document.querySelectorAll('#registerForm input[required]');
+            let isValid = true;
+            let errorMessage = "Por favor, preencha todos os campos obrigatórios.";
+
+            // Reseta estilos de erro anteriores
+            inputs.forEach(input => input.classList.remove('error'));
+
+            // 1. Verifica se campos obrigatórios estão vazios
+            inputs.forEach(input => {
+                if (!input.value.trim() || (input.type === 'checkbox' && !input.checked)) {
+                    input.classList.add('error');
+                    isValid = false;
+                }
+            });
+
+            // 2. Verifica se as senhas coincidem
+            const senha = document.getElementById('senha');
+            const confirma = document.getElementById('confirmaSenha');
+
+            if (isValid && senha.value !== confirma.value) {
+                isValid = false;
+                senha.classList.add('error');
+                confirma.classList.add('error');
+                errorMessage = "As senhas digitadas não coincidem.";
+            }
+
+            // DECISÃO DE QUAL MODAL MOSTRAR
+            if (isValid) {
+                // Tudo certo: Mostra modal de sucesso
+                document.getElementById('successModal').style.display = 'flex';
+            } else {
+                // Erro: Mostra modal de erro com a mensagem
+                document.getElementById('errorText').textContent = errorMessage;
+                document.getElementById('errorModal').style.display = 'flex';
+            }
+        });
+    </script>
+
+</body>
+</html>
