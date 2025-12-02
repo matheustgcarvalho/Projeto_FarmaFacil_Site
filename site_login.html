@@ -138,6 +138,7 @@
             line-height: 1.6; color: rgba(255,255,255,0.85); font-weight: 400;
         }
 
+
         /* --- LADO DIREITO (LOGIN FORM) --- */
         .login-section {
             flex: 1;
@@ -290,7 +291,9 @@
                 alert("Por favor, preencha o CPF e a senha corretamente.");
                 return;
             }
-            alert("Login realizado com sucesso!\n\nRedirecionando para o Painel do Usuário...");
+            
+            // Redirecionamento DIRETO (Sem alerta)
+            window.location.href = 'site_site.html';
         });
     </script>
 
