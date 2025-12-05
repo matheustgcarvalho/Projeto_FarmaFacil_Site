@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        :root {
+            --tech-purple: #2E1A47; --deep-purple: #1a0f2e; --card-bg: rgba(46, 26, 71, 0.6);
+            --neon-mint: #69FFC2; --pure-white: #FFFFFF; --gray-text: #a0a0b0;
+            --warning-red: #ff4757; --alert-orange: #ff9800;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--deep-purple); color: var(--pure-white); height: 100vh; display: flex; overflow: hidden; }
+
+        .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; background-image: radial-gradient(circle at 90% 10%, rgba(105, 255, 194, 0.05), transparent 40%); }
+        .header-dashboard { margin-bottom: 30px; }
+        .page-title h1 { font-size: 1.8rem; font-weight: 700; }
+        .page-title p { color: var(--gray-text); margin-top: 5px; font-size: 0.9rem; }
+
+        .account-form { max-width: 700px; background: rgba(0,0,0,0.2); padding: 30px; border-radius: 20px; }
+        .account-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 8px; color: var(--gray-text); font-size: 0.85rem; }
+        .form-input { 
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 8px; color: white; outline: none; font-size: 0.95rem; transition: 0.3s;
+        }
+        .form-input:disabled { background: transparent; border-color: transparent; cursor: default; padding-left: 0; }
+        .form-input:enabled { background: rgba(255,255,255,0.08); border-color: var(--neon-mint); }
+
+        .btn-edit-profile { background: transparent; border: 1px solid var(--neon-mint); color: var(--neon-mint); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; float: right; display:flex; align-items:center; gap:5px;}
+        .btn-save { padding: 12px 30px; background: var(--neon-mint); color: var(--tech-purple); border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 20px; display: none; }
+        
+        .section-divider { font-size: 1rem; font-weight: 700; color: var(--neon-mint); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+
+        .alert-banner { background: rgba(255, 152, 0, 0.15); border-left: 4px solid var(--alert-orange); padding: 15px; border-radius: 8px; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .alert-icon { font-size: 2rem; color: var(--alert-orange); }
+        .alert-content h3 { color: var(--alert-orange); margin-bottom: 3px; font-size: 1rem; }
+        .alert-content p { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
+
+        .upload-card { background: rgba(255,255,255,0.03); border: 1px dashed var(--gray-text); border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .upload-card.verified { background: rgba(105, 255, 194, 0.1); border: 1px solid var(--neon-mint); }
+        .upload-info { display: flex; align-items: center; gap: 15px; }
+        .upload-icon { font-size: 2rem; color: var(--gray-text); }
+        .upload-card.verified .upload-icon { color: var(--neon-mint); }
+        
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .status-badge.pending { background: var(--gray-text); color: var(--tech-purple); }
+        .status-badge.verified { background: var(--neon-mint); color: var(--tech-purple); }
+
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .btn-upload { border: 1px solid var(--pure-white); color: var(--pure-white); background: transparent; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+
+        .btn-remove-doc { border: 1px solid var(--warning-red); color: var(--warning-red); background: transparent; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: none; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: #2a1b3d; border-radius: 20px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid var(--neon-mint); }
+        .modal-icon { font-size: 4rem; color: var(--neon-mint); margin-bottom: 15px; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
+        .modal-text { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 25px; }
+        .modal-btn { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .btn-ok { background: var(--neon-mint); color: var(--tech-purple); width: 100%; }
+
+        .modal-error { border-color: var(--warning-red); }
+        .modal-error .modal-icon { color: var(--warning-red); }
+        .btn-modal-cancel { background: rgba(255,255,255,0.1); color: white; }
+        .btn-modal-confirm { background: var(--warning-red); color: white; margin-left: 10px;}
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="header-dashboard">
+            <div class="page-title"><h1>Minha Conta</h1><p>Gerencie seus dados pessoais.</p></div>
+        </div>
+
+        <div id="accountAlertBanner" class="alert-banner" style="display: none;">
+            <span class="material-icons alert-icon">warning_amber</span>
+            <div class="alert-content">
+                <h3>Verificação Pendente</h3>
+                <p>Anexe uma foto do seu documento para liberar compras controladas.</p>
+            </div>
+        </div>
+        
+        <div class="account-form">
+            <h3 style="margin-bottom: 15px; color: var(--neon-mint);">Documentação</h3>
+            <div class="upload-card" id="docCard">
+                <div class="upload-info">
+                    <span class="material-icons upload-icon" id="docIcon">description</span>
+                    <div class="upload-text">
+                        <h4 id="docTitle">Documento de Identidade</h4>
+                        <p id="docDesc">RG ou CNH com foto.</p>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="status-badge pending" id="docBadge">Pendente</div>
+                    <div class="upload-btn-wrapper" id="uploadBtnContainer" style="margin-top: 10px;">
+                        <button class="btn-upload">Enviar Foto</button>
+                        <input type="file" id="docUploadInput" accept="image/*">
+                    </div>
+                    <button id="btnRemoveDoc" class="btn-remove-doc" onclick="removeDocument()" style="margin-top: 10px;">Remover</button>
+                </div>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;">
+
+            <div style="overflow: hidden;">
+                <h3 style="margin:0; color: var(--neon-mint); float: left;">Dados Pessoais</h3>
+                <button id="btnEdit" class="btn-edit-profile"><span class="material-icons" style="font-size:1rem;">edit</span> Editar</button>
+            </div>
+            <div style="clear:both; margin-bottom: 15px;"></div>
+            
+            <div id="personalDataForm">
+                <div class="account-grid">
+                    <div class="form-group full-width"><label class="form-label">Nome Completo</label><input type="text" class="form-input" value="Gabriel Albuquerque" disabled></div>
+                    <div class="form-group"><label class="form-label">CPF</label><input type="text" class="form-input" value="000.000.000-00" disabled></div>
+                    <div class="form-group"><label class="form-label">Nascimento</label><input type="date" class="form-input" value="1990-05-20" style="color-scheme: dark;" disabled></div>
+                    <div class="form-group"><label class="form-label">Celular</label><input type="tel" class="form-input" value="(11) 99999-8888" disabled></div>
+                    <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-input" value="gabriel@exemplo.com" disabled></div>
+                </div>
+                
+                <div class="section-divider">Endereço</div>
+                <div class="account-grid">
+                    <div class="form-group"><label class="form-label">CEP</label><input type="text" class="form-input" value="01310-100" disabled></div>
+                    <div class="form-group"><label class="form-label">Logradouro</label><input type="text" class="form-input" value="Av. Paulista" disabled></div>
+                    <div class="form-group"><label class="form-label">Número</label><input type="text" class="form-input" value="1000" disabled></div>
+                    <div class="form-group"><label class="form-label">Bairro</label><input type="text" class="form-input" value="Bela Vista" disabled></div>
+                    <div class="form-group"><label class="form-label">Cidade</label><input type="text" class="form-input" value="São Paulo" disabled></div>
+                    <div class="form-group"><label class="form-label">UF</label><input type="text" class="form-input" value="SP" disabled></div>
+                </div>
+
+                <button id="btnSave" class="btn-save">Salvar Alterações</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="saveSuccessModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="material-icons modal-icon">check_circle</span>
+            <div class="modal-title">Salvo!</div>
+            <div class="modal-text">Dados atualizados com sucesso.</div>
+            <button class="modal-btn btn-ok" onclick="closeModal('saveSuccessModal')">OK</button>
+        </div>
+    </div>
+
+    <div id="uploadSuccessModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="material-icons modal-icon">verified</span>
+            <div class="modal-title">Enviado!</div>
+            <div class="modal-text">Identidade verificada.</div>
+            <button class="modal-btn btn-ok" onclick="closeModal('uploadSuccessModal')">OK</button>
+        </div>
+    </div>
+
+    <div id="removeConfirmModal" class="modal-overlay">
+        <div class="modal-content modal-error">
+            <span class="material-icons modal-icon">delete_forever</span>
+            <div class="modal-title">Remover?</div>
+            <div class="modal-text">Sua conta voltará para pendente.</div>
+            <button class="modal-btn btn-modal-cancel" onclick="closeModal('removeConfirmModal')">Cancelar</button>
+            <button class="modal-btn btn-modal-confirm" onclick="confirmRemoveAction()">Remover</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isVerified = sessionStorage.getItem('userVerified') === 'true';
+            if (!isVerified) resetUIToPending();
+            else updateUIAsVerified();
+
+            const btnEdit = document.getElementById('btnEdit');
+            const btnSave = document.getElementById('btnSave');
+            const inputs = document.querySelectorAll('#personalDataForm input');
+
+            btnEdit.addEventListener('click', () => {
+                inputs.forEach(i => i.disabled = false);
+                btnSave.style.display = 'block';
+                btnEdit.style.display = 'none';
+            });
+
+            btnSave.addEventListener('click', () => {
+                inputs.forEach(i => i.disabled = true);
+                btnSave.style.display = 'none';
+                btnEdit.style.display = 'flex';
+                document.getElementById('saveSuccessModal').style.display = 'flex';
+            });
+        });
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        const fileInput = document.getElementById('docUploadInput');
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                document.querySelector('.btn-upload').textContent = "Enviando...";
+                setTimeout(() => {
+                    document.getElementById('uploadSuccessModal').style.display = 'flex';
+                    sessionStorage.setItem('userVerified', 'true');
+                    updateUIAsVerified();
+                    document.querySelector('.btn-upload').textContent = "Enviar Foto";
+                    // Dispara evento para atualizar a sidebar na pagina pai
+                    window.parent.dispatchEvent(new Event('storage'));
+                }, 1500);
+            }
+        });
+
+        function removeDocument() { document.getElementById('removeConfirmModal').style.display = 'flex'; }
+        function confirmRemoveAction() {
+            closeModal('removeConfirmModal');
+            sessionStorage.setItem('userVerified', 'false');
+            resetUIToPending();
+            window.parent.dispatchEvent(new Event('storage'));
+        }
+
+        function updateUIAsVerified() {
+            document.getElementById('accountAlertBanner').style.display = 'none';
+            const card = document.getElementById('docCard');
+            card.classList.add('verified');
+            document.getElementById('docIcon').textContent = 'verified_user';
+            document.getElementById('docTitle').textContent = 'Identidade Verificada';
+            document.getElementById('docDesc').textContent = 'Acesso liberado.';
+            document.getElementById('docBadge').textContent = 'Verificado';
+            document.getElementById('docBadge').className = 'status-badge verified';
+            document.getElementById('uploadBtnContainer').style.display = 'none';
+            document.getElementById('btnRemoveDoc').style.display = 'block';
+        }
+
+        function resetUIToPending() {
+            document.getElementById('accountAlertBanner').style.display = 'flex';
+            const card = document.getElementById('docCard');
+            card.classList.remove('verified');
+            document.getElementById('docIcon').textContent = 'description';
+            document.getElementById('docTitle').textContent = 'Documento de Identidade';
+            document.getElementById('docDesc').textContent = 'RG ou CNH com foto.';
+            document.getElementById('docBadge').textContent = 'Pendente';
+            document.getElementById('docBadge').className = 'status-badge pending';
+            document.getElementById('uploadBtnContainer').style.display = 'inline-block';
+            document.getElementById('btnRemoveDoc').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

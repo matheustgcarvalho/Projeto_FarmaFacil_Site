@@ -8,13 +8,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <style>
-        /* --- IDENTIDADE VISUAL --- */
         :root {
             --tech-purple: #2E1A47;
             --deep-purple: #1a0f2e;
-            --card-bg: rgba(46, 26, 71, 0.6);
             --neon-mint: #69FFC2;
-            --mint-hover: #4addb0;
             --pure-white: #FFFFFF;
             --gray-text: #a0a0b0;
             --warning-red: #ff4757;
@@ -24,14 +21,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background-color: var(--deep-purple);
-            color: var(--pure-white);
             height: 100vh;
-            display: flex;
-            overflow: hidden;
+            background-color: var(--deep-purple);
+            display: flex; /* Layout lado a lado */
+            overflow: hidden; /* Remove rolagem da página principal */
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (Fixa na Esquerda) --- */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, var(--tech-purple) 0%, #150b24 100%);
@@ -39,6 +35,7 @@
             display: flex; flex-direction: column;
             border-right: 1px solid rgba(255,255,255,0.05);
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .brand {
@@ -51,6 +48,7 @@
         .nav-menu { list-style: none; flex-grow: 1; }
         .nav-item { margin-bottom: 10px; }
         
+        /* Links do Menu */
         .nav-link {
             display: flex; align-items: center; gap: 15px;
             padding: 12px 15px;
@@ -60,7 +58,7 @@
             font-weight: 500;
             transition: all 0.3s;
             cursor: pointer;
-            position: relative; 
+            position: relative;
         }
         .nav-link:hover, .nav-link.active {
             background-color: rgba(105, 255, 194, 0.1);
@@ -68,19 +66,19 @@
         }
         .nav-link .material-icons { font-size: 1.4rem; }
 
-        /* ALERTA NA SIDEBAR */
+        /* Alerta na Sidebar (Bolinha Vermelha) */
         .nav-warning-badge {
             width: 10px; height: 10px;
             background-color: var(--warning-red);
             border-radius: 50%;
-            margin-left: auto; 
+            margin-left: auto;
             box-shadow: 0 0 8px var(--warning-red);
             display: none; 
             animation: pulseRed 1.5s infinite;
         }
-        @keyframes pulseRed { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
+        @keyframes pulseRed { 0%, 100% {opacity: 1;} 50% {opacity: 0.5;} }
 
-
+        /* Perfil Mini */
         .user-profile-mini {
             display: flex; align-items: center; gap: 10px;
             padding: 15px; background-color: rgba(0,0,0,0.2);
@@ -91,235 +89,29 @@
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
             color: var(--tech-purple); font-weight: 800;
         }
-        .user-info div:first-child { font-weight: 700; font-size: 0.9rem; }
+        .user-info div:first-child { font-weight: 700; font-size: 0.9rem; color: white;}
         .user-info div:last-child { font-size: 0.75rem; color: var(--gray-text); }
         
         .btn-logout {
             background: none; border: none; color: var(--warning-red); cursor: pointer; margin-left: auto;
         }
 
-        /* --- ÁREA PRINCIPAL --- */
-        .main-content {
+        /* --- ÁREA DE CONTEÚDO (IFRAME) --- */
+        .content-wrapper {
             flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background-image: radial-gradient(circle at 90% 10%, rgba(105, 255, 194, 0.05), transparent 40%);
+            background-color: var(--deep-purple);
+            position: relative;
         }
 
-        .header-dashboard {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
-        }
-        .page-title h1 { font-size: 2rem; font-weight: 700; }
-        .page-title p { color: var(--gray-text); margin-top: 5px; }
-        
-        .date-display {
-            background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px 20px; border-radius: 30px; font-size: 0.9rem; color: var(--gray-text);
+        /* O Iframe ocupa 100% do espaço restante */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
         }
 
-        .content-section { display: none; animation: fadeIn 0.4s; }
-        .content-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .dashboard-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; margin-bottom: 40px; }
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px; padding: 25px; backdrop-filter: blur(10px);
-        }
-        .points-card {
-            background: linear-gradient(135deg, rgba(105, 255, 194, 0.1), rgba(46, 26, 71, 0.8));
-            border: 1px solid rgba(105, 255, 194, 0.3);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .points-info h3 { font-size: 1rem; color: var(--gray-text); font-weight: 500; margin-bottom: 10px; }
-        .points-value { font-size: 3.5rem; font-weight: 800; color: var(--neon-mint); text-shadow: 0 0 20px rgba(105, 255, 194, 0.3); }
-        .points-level { 
-            margin-top: 10px; display: inline-block; padding: 5px 12px; background: rgba(105, 255, 194, 0.2); 
-            color: var(--neon-mint); border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-        }
-        .points-icon { font-size: 6rem; opacity: 0.1; color: var(--pure-white); }
-
-        .qr-card { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .qr-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; }
-        .qr-image { width: 120px; height: 120px; border-radius: 10px; border: 3px solid white; }
-        .qr-desc { font-size: 0.8rem; color: var(--gray-text); margin-top: 15px; max-width: 200px; }
-
-        .section-split { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-title { font-size: 1.2rem; font-weight: 700; }
-        .btn-view-all { color: var(--neon-mint); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
-
-        .history-list, .notification-list { display: flex; flex-direction: column; gap: 10px; }
-        .history-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: rgba(255,255,255,0.03); border-radius: 12px; transition: background 0.2s;
-        }
-        .history-item:hover { background-color: rgba(255,255,255,0.06); }
-        .h-left { display: flex; align-items: center; gap: 15px; }
-        .h-icon { width: 40px; height: 40px; background-color: rgba(105, 255, 194, 0.1); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--neon-mint); }
-        .h-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
-        .h-info span { font-size: 0.8rem; color: var(--gray-text); }
-        .h-right { text-align: right; }
-        .h-points { color: var(--neon-mint); font-weight: 700; font-size: 0.9rem; }
-        .h-price { font-size: 0.8rem; color: var(--gray-text); }
-
-        .notif-item { background-color: rgba(255,255,255,0.03); border-left: 3px solid var(--neon-mint); padding: 15px; border-radius: 0 8px 8px 0; }
-        .notif-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
-        .notif-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.4; }
-
-        .order-card {
-            background-color: rgba(255,255,255,0.03); border-radius: 15px; padding: 20px; margin-bottom: 15px;
-            display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05);
-        }
-        .order-status { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; background: rgba(105,255,194,0.2); color: var(--neon-mint); }
-        .order-id { color: var(--gray-text); font-size: 0.9rem; margin-bottom: 5px; }
-
-        /* --- ABA FAVORITOS SPLIT (ATUALIZADO) --- */
-        .fav-container { display: flex; flex-direction: column; gap: 20px; height: 100%; }
-        
-        /* Topo: Explorar */
-        .fav-top {
-            flex: 1; background: rgba(0,0,0,0.1); padding: 20px; border-radius: 15px;
-            display: flex; flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .fav-search-bar {
-            width: 100%; padding: 12px 40px 12px 15px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
-            color: white; outline: none; margin-bottom: 15px;
-        }
-        .fav-search-bar:focus { border-color: var(--neon-mint); }
-        
-        /* Grid de Resultados (Explorar) */
-        .fav-results-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 15px; overflow-y: auto; max-height: 350px; /* Rolagem Vertical */
-            padding-right: 5px;
-        }
-        
-        /* Estilização da barra de rolagem */
-        .fav-results-grid::-webkit-scrollbar { width: 6px; }
-        .fav-results-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
-        .fav-results-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-        .fav-results-grid::-webkit-scrollbar-thumb:hover { background: var(--neon-mint); }
-
-        /* Divisor */
-        .fav-divider {
-            border-bottom: 2px dashed rgba(255,255,255,0.15);
-            position: relative; text-align: center; margin: 5px 0;
-        }
-        .fav-divider span {
-            background-color: var(--deep-purple); padding: 0 15px; 
-            color: var(--neon-mint); font-size: 0.85rem; font-weight: 700;
-            position: relative; top: 10px; letter-spacing: 1px;
-        }
-
-        /* Bottom: Meus Favoritos */
-        .fav-bottom { flex: 1; padding: 10px 0; }
-        .my-fav-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 15px;
-        }
-
-        /* Card Genérico de Medicamento */
-        .fav-card { 
-            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; 
-            text-align: left; border: 1px solid transparent; transition: 0.3s; position: relative;
-            display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
-        }
-        .fav-card:hover { border-color: var(--neon-mint); background: rgba(255,255,255,0.08); }
-        
-        .fav-card-icon { 
-            font-size: 2rem; color: var(--gray-text);
-            background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;
-            align-self: flex-start;
-        }
-        .fav-card-info h4 { font-size: 0.9rem; margin-bottom: 2px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;}
-        .fav-card-info p { font-size: 0.8rem; color: var(--neon-mint); font-weight: bold; }
-
-        .btn-fav-action {
-            position: absolute; top: 10px; right: 10px;
-            background: none; border: none; cursor: pointer; transition: transform 0.2s;
-        }
-        .btn-fav-action:hover { transform: scale(1.2); }
-        .btn-fav-action .material-icons { font-size: 1.4rem; color: rgba(255,255,255,0.3); }
-        .btn-fav-action.liked .material-icons { color: var(--warning-red); }
-
-        /* --- ESTILOS MINHA CONTA --- */
-        .account-form { max-width: 600px; background: rgba(0,0,0,0.2); padding: 30px; border-radius: 20px; }
-        .account-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-width { grid-column: span 2; }
-
-        .form-group { margin-bottom: 10px; }
-        .form-label { display: block; margin-bottom: 8px; color: var(--gray-text); font-size: 0.85rem; }
-        .form-input { 
-            width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 8px; color: white; outline: none; font-size: 0.95rem; transition: all 0.3s;
-        }
-        .form-input:disabled { background-color: transparent; border-color: transparent; color: var(--gray-text); cursor: default; padding-left: 0; }
-        .form-input:enabled { background-color: rgba(255,255,255,0.08); border-color: var(--neon-mint); }
-
-        .btn-edit-profile {
-            background: transparent; border: 1px solid var(--neon-mint); color: var(--neon-mint);
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 5px;
-        }
-        .btn-edit-profile:hover { background: rgba(105, 255, 194, 0.1); }
-
-        .btn-save { 
-            padding: 12px 30px; background: var(--neon-mint); color: var(--tech-purple); border: none; 
-            border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 20px;
-            display: none;
-        }
-        .btn-save:hover { box-shadow: 0 0 15px rgba(105, 255, 194, 0.4); }
-        
-        .section-divider { font-size: 1.1rem; font-weight: 700; color: var(--neon-mint); margin: 25px 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; width: 100%; }
-        .section-header-account { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        .alert-banner {
-            background-color: rgba(255, 152, 0, 0.15); border-left: 4px solid var(--alert-orange);
-            padding: 20px; border-radius: 8px; margin-bottom: 30px;
-            display: flex; align-items: center; gap: 20px; animation: slideDown 0.5s;
-        }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .alert-icon { font-size: 2.5rem; color: var(--alert-orange); }
-        .alert-content h3 { color: var(--alert-orange); margin-bottom: 5px; font-size: 1.1rem; }
-        .alert-content p { color: rgba(255,255,255,0.8); font-size: 0.9rem; line-height: 1.4; }
-
-        .upload-card {
-            background: rgba(255,255,255,0.03); border: 1px dashed var(--gray-text);
-            border-radius: 12px; padding: 20px; margin-bottom: 30px;
-            display: flex; align-items: center; justify-content: space-between; transition: all 0.3s;
-        }
-        .upload-card.verified { background: rgba(105, 255, 194, 0.1); border: 1px solid var(--neon-mint); }
-        .upload-info { display: flex; align-items: center; gap: 15px; }
-        .upload-icon { font-size: 2rem; color: var(--gray-text); }
-        .upload-card.verified .upload-icon { color: var(--neon-mint); }
-        .upload-text h4 { font-size: 1rem; margin-bottom: 5px; }
-        .upload-text p { font-size: 0.8rem; color: var(--gray-text); }
-        
-        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .status-badge.pending { background: var(--gray-text); color: var(--tech-purple); }
-        .status-badge.verified { background: var(--neon-mint); color: var(--tech-purple); }
-
-        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
-        .btn-upload {
-            border: 1px solid var(--pure-white); color: var(--pure-white);
-            background-color: transparent; padding: 8px 20px; border-radius: 8px;
-            font-size: 0.9rem; font-weight: bold; cursor: pointer;
-        }
-        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-
-        .btn-remove-doc {
-            border: 1px solid var(--warning-red); color: var(--warning-red);
-            background-color: transparent; padding: 8px 20px; border-radius: 8px;
-            font-size: 0.9rem; font-weight: bold; cursor: pointer; display: none;
-            transition: all 0.3s;
-        }
-        .btn-remove-doc:hover { background-color: rgba(255, 71, 87, 0.1); }
-
-        /* MODAIS */
+        /* --- MODAL GLOBAL (KYC) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);
@@ -330,41 +122,17 @@
             background-color: #2a1b3d; border: 1px solid var(--alert-orange);
             border-radius: 20px; padding: 30px; width: 90%; max-width: 450px;
             text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transform: scale(0.9); animation: modalPop 0.3s forwards;
         }
-        @keyframes modalPop { to { transform: scale(1); } }
         .modal-icon { font-size: 4rem; color: var(--alert-orange); margin-bottom: 15px; }
         .modal-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
-        .modal-text { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 30px; line-height: 1.5; }
-        .modal-btn { 
-            padding: 14px 30px; border-radius: 10px; border: none; 
-            font-weight: 700; cursor: pointer; font-size: 0.95rem;
-        }
+        .modal-text { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 25px; line-height: 1.5; }
         
+        .modal-actions { display: flex; gap: 15px; justify-content: center; }
+        .modal-btn { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
         .btn-modal-later { background-color: rgba(255,255,255,0.1); color: white; }
-        .btn-modal-verify { background-color: var(--alert-orange); color: white; margin-left: 10px; }
-
-        .modal-error { border-color: var(--warning-red); }
-        .modal-error .modal-icon { color: var(--warning-red); }
-        .btn-modal-retry { background-color: var(--warning-red); color: white; margin-left: 10px; }
-        .btn-modal-back { background-color: rgba(255,255,255,0.1); color: white; }
-
-        .modal-success { border-color: var(--neon-mint); }
-        .modal-success .modal-icon { color: var(--neon-mint); }
-        .btn-modal-close { background-color: var(--neon-mint); color: var(--tech-purple); width: 100%; margin: 0; }
-        .btn-modal-upload-ok { background-color: var(--neon-mint); color: var(--tech-purple); width: 100%; }
-
-        @media (max-width: 900px) {
-            body { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; padding: 15px; flex-direction: row; align-items: center; justify-content: space-between; }
-            .nav-menu { display: none; }
-            .user-profile-mini { display: none; }
-            .dashboard-grid, .section-split { grid-template-columns: 1fr; }
-            .main-content { padding: 20px; }
-            .upload-card { flex-direction: column; text-align: center; gap: 15px; }
-            .account-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-        }
+        .btn-modal-verify { background-color: var(--alert-orange); color: white; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -373,411 +141,108 @@
         <div class="brand">
             <span class="material-icons">local_pharmacy</span> FarmaFácil
         </div>
+
         <ul class="nav-menu">
-            <li class="nav-item"><a onclick="switchTab('overview')" class="nav-link active" id="link-overview"><span class="material-icons">dashboard</span> Visão Geral</a></li>
-            <li class="nav-item"><a onclick="switchTab('orders')" class="nav-link" id="link-orders"><span class="material-icons">receipt_long</span> Meus Pedidos</a></li>
-            <li class="nav-item"><a onclick="switchTab('favorites')" class="nav-link" id="link-favorites"><span class="material-icons">favorite</span> Favoritos</a></li>
             <li class="nav-item">
-                <a onclick="switchTab('account')" class="nav-link" id="link-account">
+                <a onclick="loadPage('tela_visao_geral.html', this)" class="nav-link active">
+                    <span class="material-icons">dashboard</span> Visão Geral
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="loadPage('tela_pedidos.html', this)" class="nav-link">
+                    <span class="material-icons">receipt_long</span> Meus Pedidos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="loadPage('tela_favoritos.html', this)" class="nav-link">
+                    <span class="material-icons">favorite</span> Favoritos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="loadPage('tela_minha_conta.html', this)" class="nav-link">
                     <span class="material-icons">person</span> Minha Conta
                     <div id="sidebarAlertBadge" class="nav-warning-badge"></div>
                 </a>
             </li>
         </ul>
+
         <div class="user-profile-mini">
             <div class="avatar-circle">GA</div>
-            <div class="user-info"><div>Gabriel A.</div><div>CPF: ***.***.789-00</div></div>
-            <button class="btn-logout" onclick="window.location.href='site_login.html'" title="Sair"><span class="material-icons">logout</span></button>
+            <div class="user-info">
+                <div>Gabriel A.</div>
+                <div>CPF: ***.***.789-00</div>
+            </div>
+            <button class="btn-logout" onclick="window.location.href='site_login.html'" title="Sair">
+                <span class="material-icons">logout</span>
+            </button>
         </div>
     </aside>
 
-    <main class="main-content">
-        
-        <div id="section-overview" class="content-section active">
-            <div class="header-dashboard">
-                <div class="page-title"><h1>Olá, Gabriel!</h1><p>Aqui está o resumo da sua saúde conectada.</p></div>
-                <div class="date-display"><span id="currentDate">...</span></div>
-            </div>
-            <div class="dashboard-grid">
-                <div class="card points-card">
-                    <div class="points-info"><h3>MEUS PONTOS FARMAFÁCIL</h3><div class="points-value">1.250</div><div class="points-level">Nível Prata</div></div>
-                    <span class="material-icons points-icon">stars</span>
-                </div>
-                <div class="card qr-card">
-                    <div class="qr-title">Meu Acesso Rápido</div>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GabrielAlbuquerqueUser123" class="qr-image" alt="QR Code">
-                    <p class="qr-desc">Mostre este código na câmera da máquina.</p>
-                </div>
-            </div>
-            <div class="section-split">
-                <div>
-                    <div class="section-header"><div class="section-title">Últimas Compras</div><a href="#" onclick="switchTab('orders')" class="btn-view-all">Ver extrato completo</a></div>
-                    <div class="history-list">
-                        <div class="history-item"><div class="h-left"><div class="h-icon"><span class="material-icons">medication</span></div><div class="h-info"><h4>Dorflex Uno + Neosaldina</h4><span>Máquina 04 - Av. Paulista</span></div></div><div class="h-right"><div class="h-points">+45 pts</div><div class="h-price">R$ 44,40</div></div></div>
-                        <div class="history-item"><div class="h-left"><div class="h-icon"><span class="material-icons">vaccines</span></div><div class="h-info"><h4>Amoxicilina 500mg</h4><span>Máquina 12 - Metrô Consolação</span></div></div><div class="h-right"><div class="h-points">+45 pts</div><div class="h-price">R$ 45,00</div></div></div>
-                        <div class="history-item"><div class="h-left"><div class="h-icon"><span class="material-icons">healing</span></div><div class="h-info"><h4>Band-Aid + Antisséptico</h4><span>Máquina 01 - Condomínio Viva</span></div></div><div class="h-right"><div class="h-points">+15 pts</div><div class="h-price">R$ 22,90</div></div></div>
-                        <div class="history-item"><div class="h-left"><div class="h-icon"><span class="material-icons">spa</span></div><div class="h-info"><h4>Bepantol Derma</h4><span>Máquina 05 - Shopping Cidade</span></div></div><div class="h-right"><div class="h-points">+35 pts</div><div class="h-price">R$ 35,90</div></div></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="section-header"><div class="section-title">Avisos</div></div>
-                    <div class="notification-list">
-                        <div class="notif-item"><div class="notif-title">💊 Lembrete de Uso Contínuo</div><div class="notif-desc">Sua Losartana está acabando.</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="section-orders" class="content-section"><div class="header-dashboard"><div class="page-title"><h1>Meus Pedidos</h1></div></div><div class="history-list"><div class="order-card"><div><div class="order-id">Pedido #8823 - 10/10/2023</div><h3 style="color:white;">Dorflex Uno (x2), Neosaldina (x1)</h3></div><div style="text-align: right;"><div class="order-status">Concluído</div><div style="margin-top: 5px; font-weight: 700; color: var(--neon-mint);">R$ 69,30</div></div></div><div class="order-card"><div><div class="order-id">Pedido #8100 - 05/09/2023</div><h3 style="color:white;">Amoxicilina 500mg (x1)</h3></div><div style="text-align: right;"><div class="order-status">Concluído</div><div style="margin-top: 5px; font-weight: 700; color: var(--neon-mint);">R$ 45,00</div></div></div><div class="order-card"><div><div class="order-id">Pedido #7902 - 20/08/2023</div><h3 style="color:white;">Vitamina C Efervescente (x3)</h3></div><div style="text-align: right;"><div class="order-status">Concluído</div><div style="margin-top: 5px; font-weight: 700; color: var(--neon-mint);">R$ 32,70</div></div></div><div class="order-card"><div><div class="order-id">Pedido #7540 - 15/08/2023</div><h3 style="color:white;">Torsilax (x1)</h3></div><div style="text-align: right;"><div class="order-status">Concluído</div><div style="margin-top: 5px; font-weight: 700; color: var(--neon-mint);">R$ 17,90</div></div></div><div class="order-card"><div><div class="order-id">Pedido #7100 - 01/08/2023</div><h3 style="color:white;">Benegrip (x2)</h3></div><div style="text-align: right;"><div class="order-status">Concluído</div><div style="margin-top: 5px; font-weight: 700; color: var(--neon-mint);">R$ 43,80</div></div></div></div></div>
-        
-        <div id="section-favorites" class="content-section">
-            <div class="header-dashboard">
-                <div class="page-title"><h1>Favoritos</h1><p>Gerencie seus itens preferidos.</p></div>
-            </div>
-            
-            <div class="fav-container">
-                <div class="fav-top">
-                    <h3 style="margin-bottom:15px; color:var(--neon-mint);">Explorar Medicamentos</h3>
-                    <input type="text" id="favSearchInput" class="fav-search-bar" placeholder="Digite para buscar (ex: Dorflex)...">
-                    <div id="favSearchResults" class="fav-results-grid">
-                        </div>
-                </div>
-
-                <div class="fav-divider"><span>MEUS ITENS SALVOS</span></div>
-
-                <div class="fav-bottom">
-                    <div id="myFavList" class="my-fav-grid">
-                         </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="section-account" class="content-section">
-            <div class="header-dashboard">
-                <div class="page-title"><h1>Minha Conta</h1><p>Gerencie seus dados pessoais e de acesso.</p></div>
-            </div>
-
-            <div id="accountAlertBanner" class="alert-banner" style="display: none;">
-                <span class="material-icons alert-icon">warning_amber</span>
-                <div class="alert-content">
-                    <h3>Verificação Pendente</h3>
-                    <p>Para sua segurança e para liberar compras de medicamentos controlados, precisamos que você anexe uma foto do seu documento.</p>
-                </div>
-            </div>
-            
-            <div class="account-form">
-                <h3 style="margin-bottom: 15px; color: var(--neon-mint);">Documentação</h3>
-                <div class="upload-card" id="docCard">
-                    <div class="upload-info">
-                        <span class="material-icons upload-icon" id="docIcon">description</span>
-                        <div class="upload-text">
-                            <h4 id="docTitle">Documento de Identidade</h4>
-                            <p id="docDesc">RG ou CNH com foto visível.</p>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="status-badge pending" id="docBadge">Pendente</div>
-                        <div class="upload-btn-wrapper" id="uploadBtnContainer" style="margin-top: 10px;">
-                            <button class="btn-upload">Enviar Foto</button>
-                            <input type="file" id="docUploadInput" accept="image/*">
-                        </div>
-                        <button id="btnRemoveDoc" class="btn-remove-doc" onclick="removeDocument()" style="margin-top: 10px;">
-                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">delete</span> Remover
-                        </button>
-                    </div>
-                </div>
-
-                <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;">
-
-                <div class="section-header-account">
-                    <h3 style="margin:0; color: var(--neon-mint);">Dados Pessoais</h3>
-                    <button id="btnEdit" class="btn-edit-profile"><span class="material-icons" style="font-size:1rem;">edit</span> Editar Dados</button>
-                </div>
-                
-                <div id="personalDataForm">
-                    <div class="account-grid">
-                        <div class="form-group full-width"><label class="form-label">Nome Completo</label><input type="text" class="form-input" value="Gabriel Albuquerque" disabled></div>
-                        <div class="form-group"><label class="form-label">CPF</label><input type="text" class="form-input" value="000.000.000-00" disabled></div>
-                        <div class="form-group"><label class="form-label">Data de Nascimento</label><input type="date" class="form-input" value="1990-05-20" style="color-scheme: dark;" disabled></div>
-                        <div class="form-group"><label class="form-label">Celular</label><input type="tel" class="form-input" value="(11) 99999-8888" disabled></div>
-                        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-input" value="gabriel@exemplo.com" disabled></div>
-                    </div>
-                    
-                    <div class="section-divider">Endereço</div>
-                    <div class="account-grid">
-                        <div class="form-group"><label class="form-label">CEP</label><input type="text" class="form-input" placeholder="00000-000" value="01310-100" disabled></div>
-                        <div class="form-group"><label class="form-label">Rua / Avenida</label><input type="text" class="form-input" placeholder="Ex: Av. Paulista" value="Av. Paulista" disabled></div>
-                        <div class="form-group"><label class="form-label">Número</label><input type="text" class="form-input" placeholder="1234" value="1000" disabled></div>
-                        <div class="form-group"><label class="form-label">Bairro</label><input type="text" class="form-input" placeholder="Bela Vista" value="Bela Vista" disabled></div>
-                        <div class="form-group"><label class="form-label">Cidade</label><input type="text" class="form-input" placeholder="São Paulo" value="São Paulo" disabled></div>
-                        <div class="form-group"><label class="form-label">Estado (UF)</label><input type="text" class="form-input" placeholder="SP" value="SP" disabled></div>
-                    </div>
-
-                    <button id="btnSave" class="btn-save">Salvar Alterações</button>
-                </div>
-            </div>
-        </div>
-
-    </main>
+    <div class="content-wrapper">
+        <iframe id="contentFrame" src="tela_visao_geral.html"></iframe>
+    </div>
 
     <div id="kycModal" class="modal-overlay">
         <div class="modal-content">
             <span class="material-icons modal-icon">gpp_maybe</span>
             <div class="modal-title">Confirme sua Identidade</div>
-            <div class="modal-text">Detectamos que sua conta ainda não possui um documento verificado.</div>
+            <div class="modal-text">
+                Detectamos que sua conta ainda não possui um documento verificado. Isso é necessário para garantir sua segurança.
+            </div>
             <div class="modal-actions">
                 <button class="modal-btn btn-modal-later" onclick="closeModal('kycModal')">Fazer Depois</button>
-                <button class="modal-btn btn-modal-verify" onclick="goToVerification()">Verificar Agora</button>
+                <button class="modal-btn btn-modal-verify" onclick="goToAccount()">Verificar Agora</button>
             </div>
-        </div>
-    </div>
-
-    <div id="saveSuccessModal" class="modal-overlay">
-        <div class="modal-content modal-success">
-            <span class="material-icons modal-icon">check_circle</span>
-            <div class="modal-title">Dados Salvos!</div>
-            <div class="modal-text">Suas informações foram atualizadas com sucesso.</div>
-            <button class="modal-btn btn-modal-close" onclick="closeModal('saveSuccessModal')">OK</button>
-        </div>
-    </div>
-
-    <div id="uploadSuccessModal" class="modal-overlay">
-        <div class="modal-content modal-success">
-            <span class="material-icons modal-icon">verified</span>
-            <div class="modal-title">Documento Enviado!</div>
-            <div class="modal-text">Sua identidade foi verificada com sucesso.</div>
-            <button class="modal-btn btn-modal-upload-ok" onclick="closeModal('uploadSuccessModal')">OK</button>
-        </div>
-    </div>
-
-    <div id="removeConfirmModal" class="modal-overlay">
-        <div class="modal-content modal-error">
-            <span class="material-icons modal-icon">delete_forever</span>
-            <div class="modal-title">Remover Documento?</div>
-            <div class="modal-text">Sua conta voltará para o status "Pendente".</div>
-            <div class="modal-actions">
-                <button class="modal-btn btn-modal-back" onclick="closeModal('removeConfirmModal')">Cancelar</button>
-                <button class="modal-btn btn-modal-retry" onclick="confirmRemoveAction()">Sim, Remover</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="removeSuccessModal" class="modal-overlay">
-        <div class="modal-content modal-success">
-            <span class="material-icons modal-icon">check_circle</span>
-            <div class="modal-title">Documento Removido</div>
-            <div class="modal-text">O documento foi excluído com sucesso.</div>
-            <button class="modal-btn btn-modal-close" onclick="closeModal('removeSuccessModal')">OK</button>
         </div>
     </div>
 
     <script>
-        const dateElement = document.getElementById('currentDate');
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const today = new Date();
-        dateElement.textContent = today.toLocaleDateString('pt-BR', options);
+        // Função para trocar o arquivo dentro do Iframe
+        function loadPage(url, element) {
+            // 1. Muda o arquivo
+            document.getElementById('contentFrame').src = url;
 
-        // --- BANCO DE DADOS SIMULADO DE PRODUTOS ---
-        const allMedicines = [
-            { id: 1, name: 'Dorflex Uno', price: '24,90', icon: 'medication' },
-            { id: 2, name: 'Neosaldina', price: '19,50', icon: 'medication_liquid' },
-            { id: 3, name: 'Torsilax', price: '17,90', icon: 'healing' },
-            { id: 4, name: 'Advil', price: '32,90', icon: 'medication' },
-            { id: 5, name: 'Paracetamol', price: '8,50', icon: 'local_hospital' },
-            { id: 6, name: 'Benegrip', price: '21,90', icon: 'sick' },
-            { id: 7, name: 'Cimegripe', price: '14,90', icon: 'medical_services' },
-            { id: 8, name: 'Vick Vaporub', price: '25,00', icon: 'sanitizer' },
-            { id: 9, name: 'Vitamina C', price: '10,90', icon: 'wb_sunny' },
-            { id: 10, name: 'Allegra', price: '65,90', icon: 'masks' },
-            { id: 11, name: 'Eno Sachê', price: '5,50', icon: 'water_drop' },
-            { id: 12, name: 'Buscopan', price: '22,00', icon: 'medication' },
-            { id: 13, name: 'Omeprazol', price: '28,00', icon: 'medication' },
-            { id: 14, name: 'Luftal', price: '19,90', icon: 'air' },
-            { id: 15, name: 'Amoxicilina', price: '45,00', icon: 'vaccines' },
-            { id: 16, name: 'Rivotril', price: '15,20', icon: 'lock' },
-        ];
+            // 2. Atualiza o menu ativo
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
 
-        // Estado dos Favoritos (Simulado)
-        let myFavIds = [1, 9, 11]; // IDs iniciais
-
+        // Lógica Global (Roda ao carregar o site)
         document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se o usuário já mandou documento (Simulado)
             const isVerified = sessionStorage.getItem('userVerified') === 'true';
-            const alertBanner = document.getElementById('accountAlertBanner');
             const sidebarBadge = document.getElementById('sidebarAlertBadge');
             
             if (!isVerified) {
-                setTimeout(() => { document.getElementById('kycModal').style.display = 'flex'; }, 500);
-                alertBanner.style.display = 'flex';
-                sidebarBadge.style.display = 'block';
-                resetUIToPending();
-            } else {
-                updateUIAsVerified();
-            }
-
-            // Setup Edição Conta
-            const btnEdit = document.getElementById('btnEdit');
-            const btnSave = document.getElementById('btnSave');
-            const formInputs = document.querySelectorAll('#personalDataForm input');
-
-            btnEdit.addEventListener('click', function() {
-                formInputs.forEach(input => input.disabled = false);
-                btnSave.style.display = 'block';
-                btnEdit.style.display = 'none';
-                formInputs[0].focus();
-            });
-
-            btnSave.addEventListener('click', function() {
-                formInputs.forEach(input => input.disabled = true);
-                btnSave.style.display = 'none';
-                btnEdit.style.display = 'flex';
-                document.getElementById('saveSuccessModal').style.display = 'flex';
-            });
-
-            // Inicializa Listas de Favoritos
-            renderAllLists();
-            
-            // Listener da Busca
-            document.getElementById('favSearchInput').addEventListener('input', function() {
-                renderExploreList(this.value);
-            });
-        });
-
-        // --- FUNÇÕES DE FAVORITOS ---
-        function renderAllLists() {
-            renderExploreList(document.getElementById('favSearchInput').value);
-            renderMyFavorites();
-        }
-
-        // Renderiza a lista de CIMA (Explorar)
-        function renderExploreList(searchTerm = '') {
-            const container = document.getElementById('favSearchResults');
-            container.innerHTML = '';
-            
-            const term = searchTerm.toLowerCase();
-            
-            // Filtra: Nome bate com a busca E não está nos favoritos
-            const filtered = allMedicines.filter(m => 
-                !myFavIds.includes(m.id) && // Não pode ser favorito
-                (term === '' || m.name.toLowerCase().includes(term)) // Se tiver busca, filtra nome
-            );
-
-            // Se não tiver busca e lista for muito grande, mostra só alguns
-            const listToShow = term === '' ? filtered.slice(0, 6) : filtered;
-
-            listToShow.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'fav-card';
-                card.innerHTML = `
-                    <div class="fav-card-icon"><span class="material-icons">${item.icon}</span></div>
-                    <div class="fav-card-info"><h4>${item.name}</h4><p>R$ ${item.price}</p></div>
-                    <button class="btn-fav-action" onclick="addToFav(${item.id})" title="Adicionar aos Favoritos">
-                        <span class="material-icons">favorite_border</span>
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Renderiza a lista de BAIXO (Meus Favoritos)
-        function renderMyFavorites() {
-            const container = document.getElementById('myFavList');
-            container.innerHTML = '';
-
-            if (myFavIds.length === 0) {
-                container.innerHTML = '<p style="color:grey; padding:10px;">Você ainda não favoritou nenhum item.</p>';
-                return;
-            }
-
-            myFavIds.forEach(id => {
-                const item = allMedicines.find(m => m.id === id);
-                if(item) {
-                    const card = document.createElement('div');
-                    card.className = 'fav-card';
-                    card.style.borderColor = 'var(--neon-mint)'; // Destaque visual
-                    card.innerHTML = `
-                        <div class="fav-card-icon"><span class="material-icons">${item.icon}</span></div>
-                        <div class="fav-card-info"><h4>${item.name}</h4><p>R$ ${item.price}</p></div>
-                        <button class="btn-fav-action liked" onclick="removeFromFav(${item.id})" title="Remover dos Favoritos">
-                            <span class="material-icons">favorite</span>
-                        </button>
-                    `;
-                    container.appendChild(card);
-                }
-            });
-        }
-
-        window.addToFav = function(id) {
-            if(!myFavIds.includes(id)) {
-                myFavIds.push(id);
-                renderAllLists();
-            }
-        }
-
-        window.removeFromFav = function(id) {
-            myFavIds = myFavIds.filter(favId => favId !== id);
-            renderAllLists();
-        }
-
-
-        // --- FUNÇÕES GERAIS ---
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function goToVerification() { closeModal('kycModal'); switchTab('account'); }
-
-        const fileInput = document.getElementById('docUploadInput');
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const btn = document.querySelector('.btn-upload');
-                btn.textContent = "Enviando...";
+                // Mostra o modal laranja
                 setTimeout(() => {
-                    document.getElementById('uploadSuccessModal').style.display = 'flex';
-                    sessionStorage.setItem('userVerified', 'true');
-                    updateUIAsVerified();
-                    btn.textContent = "Enviar Foto"; 
-                }, 1500);
+                    document.getElementById('kycModal').style.display = 'flex';
+                }, 500);
+                // Acende a bolinha vermelha no menu
+                sidebarBadge.style.display = 'block';
+            } else {
+                sidebarBadge.style.display = 'none';
             }
+            
+            // Escuta se a tela filha (minha conta) alterou o status
+            window.addEventListener('storage', () => {
+                 if(sessionStorage.getItem('userVerified') === 'true') {
+                     sidebarBadge.style.display = 'none';
+                 } else {
+                     sidebarBadge.style.display = 'block';
+                 }
+            });
         });
 
-        function removeDocument() { document.getElementById('removeConfirmModal').style.display = 'flex'; }
-        function confirmRemoveAction() {
-            closeModal('removeConfirmModal');
-            setTimeout(() => {
-                sessionStorage.setItem('userVerified', 'false');
-                resetUIToPending();
-                document.getElementById('removeSuccessModal').style.display = 'flex';
-            }, 500);
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
         }
 
-        function updateUIAsVerified() {
-            document.getElementById('accountAlertBanner').style.display = 'none';
-            document.getElementById('sidebarAlertBadge').style.display = 'none';
-            document.getElementById('docCard').classList.add('verified');
-            document.getElementById('docIcon').textContent = 'verified_user';
-            document.getElementById('docTitle').textContent = 'Identidade Verificada';
-            document.getElementById('docDesc').textContent = 'Acesso total liberado.';
-            document.getElementById('docBadge').textContent = 'Verificado';
-            document.getElementById('docBadge').className = 'status-badge verified';
-            document.getElementById('uploadBtnContainer').style.display = 'none';
-            document.getElementById('btnRemoveDoc').style.display = 'block';
-        }
-
-        function resetUIToPending() {
-            document.getElementById('accountAlertBanner').style.display = 'flex';
-            document.getElementById('sidebarAlertBadge').style.display = 'block';
-            document.getElementById('docCard').classList.remove('verified');
-            document.getElementById('docIcon').textContent = 'description';
-            document.getElementById('docTitle').textContent = 'Documento de Identidade';
-            document.getElementById('docDesc').textContent = 'RG ou CNH com foto visível.';
-            document.getElementById('docBadge').textContent = 'Pendente';
-            document.getElementById('docBadge').className = 'status-badge pending';
-            document.getElementById('uploadBtnContainer').style.display = 'inline-block';
-            document.getElementById('btnRemoveDoc').style.display = 'none';
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('link-' + tabName).classList.add('active');
-            document.getElementById('section-' + tabName).classList.add('active');
+        function goToAccount() {
+            closeModal('kycModal');
+            // Simula clique no 4º item do menu (Minha Conta) e carrega a tela
+            const contaLink = document.querySelectorAll('.nav-link')[3]; 
+            loadPage('tela_minha_conta.html', contaLink);
         }
     </script>
 
